@@ -118,6 +118,5 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 
-
   # config :helpdesk, :my_setting, System.get_env("MY_ SETTING")
 end

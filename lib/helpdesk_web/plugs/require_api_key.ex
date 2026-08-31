@@ -1,4 +1,3 @@
-
 defmodule HelpdeskWeb.Plugs.RequireApiKey do
   @behaviour Plug
 

@@ -41,7 +41,10 @@ defmodule HelpdeskWeb.Endpoint do
     cookie_key: "request_logger"
 
   plug Plug.RequestId
-  plug HelpdeskWeb.Plugs.RequestTimer
+
+  plug HelpdeskWeb.Plugs.RequestTimer,
+    threshold: 500
+
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
