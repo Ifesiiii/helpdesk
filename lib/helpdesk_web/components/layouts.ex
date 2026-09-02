@@ -35,6 +35,9 @@ defmodule HelpdeskWeb.Layouts do
 
   def app(assigns) do
     ~H"""
+    <.live_title default="Helpdesk" suffix=" . Helpdesk">
+      {assigns[:about]}
+    </.live_title>
     <header class="navbar px-4 sm:px-6 lg:px-8">
       <div class="flex-1">
         <a href="/" class="flex-1 flex w-fit items-center gap-2">
@@ -148,6 +151,50 @@ defmodule HelpdeskWeb.Layouts do
       >
         <.icon name="hero-moon-micro" class="size-4 opacity-75 hover:opacity-100" />
       </button>
+    </div>
+    """
+  end
+
+  @doc """
+  Layout for public marketing pages: full-width, no app nav, footer with links.
+  """
+  attr :flash, :map, required: true
+  attr :nav_items, :list, default: []
+  slot :inner_block, required: true
+
+  def marketing(assigns) do
+    ~H"""
+    <div class="min-h-screen flex flex-col">
+      <header class="navbar border-b border-base-200 px-4 sm:px-6 lg:px-8">
+        <div class="flex-1">
+          <a href={~p"/"} class="flex items-center gap-2 font-semibold">
+            <img src={~p"/images/logo.svg"} width="28" alt="" /> Helpdesk
+          </a>
+        </div>
+        <nav class="flex-none">
+          <ul class="flex gap-1 items-center">
+            <li :for={item <- @nav_items}>
+              <.link navigate={item.path} class="btn btn-ghost btn-sm">{item.label}</.link>
+            </li>
+            <li><.theme_toggle /></li>
+            <li>
+              <.link navigate={~p"/users/log-in"} class="btn btn-primary btn-sm">
+                Log in
+              </.link>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="flex-1 px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-5xl">{render_slot(@inner_block)}</div>
+      </main>
+
+      <footer class="border-t border-base-200 px-4 py-8 text-sm text-base-content/60">
+        <div class="mx-auto max-w-5xl">© {Date.utc_today().year} StackChase</div>
+      </footer>
+
+      <.flash_group flash={@flash} />
     </div>
     """
   end

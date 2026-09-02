@@ -43,9 +43,8 @@ defmodule HelpdeskWeb.Router do
       resources "/comments", CommentController, only: [:create, :delete]
     end
 
-  get "/tickets/new", TicketController, :new
-  get "/tickets/:id", TicketController, :show
-
+    get "/tickets/new", TicketController, :new
+    get "/tickets/:id", TicketController, :show
 
     get "/inbox", InboxController, :index
     get "/settings", SettingsController, :edit
@@ -80,6 +79,21 @@ defmodule HelpdeskWeb.Router do
 
       live_dashboard "/dashboard", metrics: HelpdeskWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+
+    scope "/dev/playground", HelpdeskWeb do
+      pipe_through :browser
+
+      get "/render", PlaygroundController, :render_example
+      get "/redirect", PlaygroundController, :redirect_example
+      get "/json", PlaygroundController, :json_example
+      get "/text", PlaygroundController, :text_example
+      get "/html", PlaygroundController, :html_example
+      get "/no-content", PlaygroundController, :no_content
+      get "/download", PlaygroundController, :download
+      get "/not-found", PlaygroundController, :not_found
+      get "/forbidden", PlaygroundController, :forbidden
+      get "/safe-redirect", PlaygroundController, :safe_redirect
     end
   end
 

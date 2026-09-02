@@ -6,5 +6,8 @@ defmodule HelpdeskWeb.PageHTML do
   """
   use HelpdeskWeb, :html
 
+  import HelpdeskWeb.CoreComponents
+  import HelpdeskWeb.MarketingComponents
+
   embed_templates "page_html/*"
 end

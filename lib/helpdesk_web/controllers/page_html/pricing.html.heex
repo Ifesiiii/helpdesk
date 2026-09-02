@@ -1,10 +1,22 @@
 <Layouts.app flash={@flash}>
   <.header>
-    About Helpdesk
-    <:subtitle>Founded in {@founded} · {@team_size} people</:subtitle>
+    Pricing
+    <:subtitle>Simple plans. No per-ticket charges.</:subtitle>
   </.header>
 
-  <p class="mt-4">
-    Helpdesk is the support desk we build in this training course.
-  </p>
+  <div class="grid gap-6 sm:grid-cols-3 mt-8">
+    <.pricing_card
+      :for={plan <- @plans}
+      name={plan.name}
+      price={plan.price}
+      seats={plan.seats}
+      highlighted={plan.name == "Team"}
+      id={"plan-#{String.downcase(plan.name)}"}
+    >
+      <:feature :for={feature <- plan.features}>{feature}</:feature>
+      <:cta>Choose {plan.name}</:cta>
+    </.pricing_card>
+  </div>
+
+  
 </Layouts.app>

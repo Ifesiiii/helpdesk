@@ -1,4 +1,7 @@
 defmodule Helpdesk do
+  # import Helpdesk.CoreComponents
+  # import Helpdesk.MakrketingComponents
+
   @moduledoc """
   Helpdesk keeps the contexts that define your domain
   and business logic.

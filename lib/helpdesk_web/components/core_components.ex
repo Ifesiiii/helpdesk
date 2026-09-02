@@ -438,6 +438,9 @@ defmodule HelpdeskWeb.CoreComponents do
   Icons are extracted from the `deps/heroicons` directory and bundled within
   your compiled app.css by the plugin in `assets/vendor/heroicons.js`.
 
+
+
+
   ## Examples
 
       <.icon name="hero-x-mark" />
@@ -502,4 +505,50 @@ defmodule HelpdeskWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  @doc """
+Renders a ticket status badge.
+
+Colour is paired with a label and an icon so the status is legible without
+relying on colour perception.
+
+## Examples
+
+    <.status_badge status={:open} />
+    <.status_badge status={:resolved} size="sm" />
+"""
+attr :status, :atom,
+  required: true,
+  values: [:open, :pending, :on_hold, :resolved, :closed]
+
+attr :size, :string, default: "md", values: ~w(sm md lg)
+attr :rest, :global
+
+def status_badge(assigns) do
+  ~H"""
+  <span class={["badge gap-1", status_class(@status), "badge-#{@size}"]} {@rest}>
+    <.icon name={status_icon(@status)} class="size-3" />
+    {status_label(@status)}
+  </span>
+  """
+end
+
+defp status_class(:open), do: "badge-warning"
+defp status_class(:pending), do: "badge-info"
+defp status_class(:on_hold), do: "badge-neutral"
+defp status_class(:resolved), do: "badge-success"
+defp status_class(:closed), do: "badge-ghost"
+
+defp status_icon(:open), do: "hero-exclamation-circle-micro"
+defp status_icon(:pending), do: "hero-clock-micro"
+defp status_icon(:on_hold), do: "hero-pause-circle-micro"
+defp status_icon(:resolved), do: "hero-check-circle-micro"
+defp status_icon(:closed), do: "hero-archive-box-micro"
+
+defp status_label(:open), do: "Open"
+defp status_label(:pending), do: "Pending"
+defp status_label(:on_hold), do: "On hold"
+defp status_label(:resolved), do: "Resolved"
+defp status_label(:closed), do: "Closed"
+
 end

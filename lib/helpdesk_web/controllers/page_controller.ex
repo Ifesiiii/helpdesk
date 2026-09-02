@@ -4,7 +4,6 @@ defmodule HelpdeskWeb.PageController do
   plug :put_page_section
   plug :put_marketing_nav
 
-
   def home(conn, _params) do
     render(conn, :home, page_title: "Helpdesk")
   end
@@ -12,7 +11,6 @@ defmodule HelpdeskWeb.PageController do
   defp put_page_section(conn, _opts) do
     assign(conn, :page_section, "marketing")
   end
-
 
   def about(conn, _params) do
     render(conn, :about,
@@ -37,8 +35,18 @@ defmodule HelpdeskWeb.PageController do
   defp plans do
     [
       %{name: "Starter", price: 0, seats: 3, features: ["Email support", "1 inbox"]},
-      %{name: "Team", price: 49, seats: 15, features: ["Everything in Starter", "SLAs", "API access"]},
-      %{name: "Business", price: 149, seats: :unlimited, features: ["Everything in Team", "SSO", "Audit log"]}
+      %{
+        name: "Team",
+        price: 49,
+        seats: 15,
+        features: ["Everything in Starter", "SLAs", "API access"]
+      },
+      %{
+        name: "Business",
+        price: 149,
+        seats: :unlimited,
+        features: ["Everything in Team", "SSO", "Audit log"]
+      }
     ]
   end
 end
