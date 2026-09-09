@@ -507,48 +507,211 @@ defmodule HelpdeskWeb.CoreComponents do
   end
 
   @doc """
-Renders a ticket status badge.
+  Renders a ticket status badge.
 
-Colour is paired with a label and an icon so the status is legible without
-relying on colour perception.
+  Colour is paired with a label and an icon so the status is legible without
+  relying on colour perception.
 
-## Examples
+  ## Examples
 
-    <.status_badge status={:open} />
-    <.status_badge status={:resolved} size="sm" />
-"""
-attr :status, :atom,
-  required: true,
-  values: [:open, :pending, :on_hold, :resolved, :closed]
-
-attr :size, :string, default: "md", values: ~w(sm md lg)
-attr :rest, :global
-
-def status_badge(assigns) do
-  ~H"""
-  <span class={["badge gap-1", status_class(@status), "badge-#{@size}"]} {@rest}>
-    <.icon name={status_icon(@status)} class="size-3" />
-    {status_label(@status)}
-  </span>
+      <.status_badge status={:open} />
+      <.status_badge status={:resolved} size="sm" />
   """
-end
+  attr :status, :atom,
+    required: true,
+    values: [:open, :pending, :on_hold, :resolved, :closed]
 
-defp status_class(:open), do: "badge-warning"
-defp status_class(:pending), do: "badge-info"
-defp status_class(:on_hold), do: "badge-neutral"
-defp status_class(:resolved), do: "badge-success"
-defp status_class(:closed), do: "badge-ghost"
+  attr :size, :string, default: "md", values: ~w(sm md lg)
+  attr :rest, :global
 
-defp status_icon(:open), do: "hero-exclamation-circle-micro"
-defp status_icon(:pending), do: "hero-clock-micro"
-defp status_icon(:on_hold), do: "hero-pause-circle-micro"
-defp status_icon(:resolved), do: "hero-check-circle-micro"
-defp status_icon(:closed), do: "hero-archive-box-micro"
+  def status_badge(assigns) do
+    ~H"""
+    <span class={["badge gap-1", status_class(@status), "badge-#{@size}"]} {@rest}>
+      <.icon name={status_icon(@status)} class="size-3" />
+      {status_label(@status)}
+    </span>
+    """
+  end
 
-defp status_label(:open), do: "Open"
-defp status_label(:pending), do: "Pending"
-defp status_label(:on_hold), do: "On hold"
-defp status_label(:resolved), do: "Resolved"
-defp status_label(:closed), do: "Closed"
+  defp status_class(:open), do: "badge-warning"
+  defp status_class(:pending), do: "badge-info"
+  defp status_class(:on_hold), do: "badge-neutral"
+  defp status_class(:resolved), do: "badge-success"
+  defp status_class(:closed), do: "badge-ghost"
 
+  defp status_icon(:open), do: "hero-exclamation-circle-micro"
+  defp status_icon(:pending), do: "hero-clock-micro"
+  defp status_icon(:on_hold), do: "hero-pause-circle-micro"
+  defp status_icon(:resolved), do: "hero-check-circle-micro"
+  defp status_icon(:closed), do: "hero-archive-box-micro"
+
+  defp status_label(:open), do: "Open"
+  defp status_label(:pending), do: "Pending"
+  defp status_label(:on_hold), do: "On hold"
+  defp status_label(:resolved), do: "Resolved"
+  defp status_label(:closed), do: "Closed"
+
+  @doc """
+  Renders a user avatar, falling back to initials when there's no image.
+
+  ## Examples
+
+      <.avatar user={@ticket.assignee} />
+      <.avatar user={@current_scope.user} size="lg" />
+  """
+  attr :user, :map, required: true, doc: "needs :name and optionally :avatar_url"
+  attr :size, :string, default: "md", values: ~w(xs sm md lg)
+  attr :rest, :global
+
+  def avatar(assigns) do
+    ~H"""
+    <div class={["avatar", !@user[:avatar_url] && "avatar-placeholder"]} {@rest}>
+      <div class={[
+        "rounded-full",
+        @size == "xs" && "w-6",
+        @size == "sm" && "w-8",
+        @size == "md" && "w-10",
+        @size == "lg" && "w-14",
+        !@user[:avatar_url] && "bg-neutral text-neutral-content"
+      ]}>
+        <img :if={@user[:avatar_url]} src={@user.avatar_url} alt={@user.name} />
+        <span :if={!@user[:avatar_url]} class={avatar_text_size(@size)}>
+          {initials(@user.name)}
+        </span>
+      </div>
+    </div>
+    """
+  end
+
+  defp avatar_text_size("xs"), do: "text-[0.6rem]"
+  defp avatar_text_size("sm"), do: "text-xs"
+  defp avatar_text_size("md"), do: "text-sm"
+  defp avatar_text_size("lg"), do: "text-lg"
+
+  defp initials(nil), do: "?"
+
+  defp initials(name) do
+    name
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.take(2)
+    |> Enum.map_join(&String.first/1)
+    |> String.upcase()
+  end
+
+  @doc """
+  Renders an empty state with an icon, a message, and an optional action.
+
+  ## Examples
+
+      <.empty_state icon="hero-inbox" title="No tickets">
+        Nothing needs your attention right now.
+        <:action><.button navigate={~p"/tickets/new"}>New ticket</.button></:action>
+      </.empty_state>
+  """
+  attr :icon, :string, default: "hero-inbox"
+  attr :title, :string, required: true
+  attr :rest, :global
+
+  slot :inner_block
+  slot :action
+
+  def empty_state(assigns) do
+    ~H"""
+    <div class="text-center py-16 px-6" {@rest}>
+      <.icon name={@icon} class="size-12 text-base-content/25" />
+      <h3 class="mt-4 font-semibold">{@title}</h3>
+      <p :if={@inner_block != []} class="mt-1 text-sm text-base-content/60 max-w-sm mx-auto">
+        {render_slot(@inner_block)}
+      </p>
+      <div :if={@action != []} class="mt-6">{render_slot(@action)}</div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a ticket priority indicator.
+
+  Priority is conveyed by shape and label as well as colour, so it remains
+  legible without colour perception.
+  """
+  attr :priority, :atom, required: true, values: [:low, :normal, :high, :urgent]
+  attr :rest, :global
+
+  def priority_pill(assigns) do
+    ~H"""
+    <span
+      class={["inline-flex items-center gap-1.5 text-xs font-medium", priority_text(@priority)]}
+      {@rest}
+    >
+      <span class={["inline-block rounded-full", priority_dot(@priority)]} aria-hidden="true" />
+      {priority_label(@priority)}
+    </span>
+    """
+  end
+
+  defp priority_text(:low), do: "text-base-content/50"
+  defp priority_text(:normal), do: "text-base-content/70"
+  defp priority_text(:high), do: "text-warning"
+  defp priority_text(:urgent), do: "text-error"
+
+  defp priority_dot(:low), do: "size-1.5 bg-current"
+  defp priority_dot(:normal), do: "size-2 bg-current"
+  defp priority_dot(:high), do: "size-2.5 bg-current"
+  defp priority_dot(:urgent), do: "size-2.5 bg-current animate-pulse"
+
+  defp priority_label(:low), do: "Low"
+  defp priority_label(:normal), do: "Normal"
+  defp priority_label(:high), do: "High"
+  defp priority_label(:urgent), do: "Urgent"
+
+  attr :id, :string, required: true
+  attr :confirm_text, :string, default: "Delete"
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def confirm_button(assigns) do
+    ~H"""
+    <button
+      type="button"
+      class="btn btn-error"
+      phx-click={
+        JS.dispatch(
+          "helpdesk:show-dialog",
+          detail: %{id: @id}
+        )
+      }
+    >
+      {render_slot(@inner_block)}
+    </button>
+
+    <dialog
+      id={@id}
+      class="modal"
+      aria-labelledby={"#{@id}-title"}
+      aria-describedby={"#{@id}-description"}
+    >
+      <div class="modal-box">
+        <h3 id={"#{@id}-title"} class="text-lg font-bold">
+          Are you sure?
+        </h3>
+
+        <p id={"#{@id}-description"} class="py-4">
+          This action cannot be undone.
+        </p>
+
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+          </form>
+
+          <form method="dialog">
+            <button class="btn btn-error" {@rest}>
+              {@confirm_text}
+            </button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    """
+  end
 end

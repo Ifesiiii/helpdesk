@@ -4,6 +4,13 @@
     <:subtitle>Simple plans. No per-ticket charges.</:subtitle>
   </.header>
 
+  <div class="flex flex-wrap gap-2">
+    <.status_badge
+      :for={status <- [:open, :pending, :on_hold, :resolved, :closed]}
+      status={status}
+    />
+  </div>
+
   <div class="grid gap-6 sm:grid-cols-3 mt-8">
     <.pricing_card
       :for={plan <- @plans}
@@ -18,5 +25,7 @@
     </.pricing_card>
   </div>
 
-  
+  <button class="btn btn-primary phx-click-loading:btn-disabled">
+    Save
+  </button>
 </Layouts.app>

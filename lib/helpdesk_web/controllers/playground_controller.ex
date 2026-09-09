@@ -3,11 +3,9 @@ defmodule HelpdeskWeb.PlaygroundController do
 
   action_fallback HelpdeskWeb.FallbackController
 
-
   def show(conn, _params) do
     render(conn, :show, page_title: "show")
   end
-
 
   def not_found(_conn, _params) do
     {:error, :not_found}

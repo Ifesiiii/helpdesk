@@ -81,6 +81,12 @@ defmodule HelpdeskWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
 
+    # router.ex — inside the dev_routes block
+    scope "/dev", HelpdeskWeb do
+      pipe_through :browser
+      get "/components", PageController, :components
+    end
+
     scope "/dev/playground", HelpdeskWeb do
       pipe_through :browser
 

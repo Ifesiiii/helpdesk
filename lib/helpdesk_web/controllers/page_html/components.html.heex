@@ -1,0 +1,94 @@
+<!-- lib/helpdesk_web/controllers/page_html/components.html.heex -->
+<Layouts.app flash={@flash}>
+  <.header>
+    Component gallery
+    <:subtitle>Every component, every state. Check both themes.</:subtitle>
+  </.header>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/50 mb-3">
+      Status badges
+    </h2>
+    <div class="flex flex-wrap gap-2">
+      <.status_badge :for={s <- [:open, :pending, :on_hold, :resolved, :closed]} status={s} />
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/50 mb-3">
+      Priorities
+    </h2>
+    <div class="flex flex-wrap gap-6">
+      <.priority_pill :for={p <- [:low, :normal, :high, :urgent]} priority={p} />
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/50 mb-3">
+      Buttons
+    </h2>
+    <div class="flex flex-wrap gap-2 items-center">
+      <.button>Default</.button>
+      <.button variant="primary">Primary</.button>
+      <.button class="btn btn-error">Danger</.button>
+      <.button navigate={~p"/"}>As a link</.button>
+      <.button disabled>Disabled</.button>
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/50 mb-3">
+      Avatars
+    </h2>
+    <div class="flex gap-3 items-end">
+      <.avatar :for={s <- ~w(xs sm md lg)} size={s} user={%{name: "Ada Lovelace"}} />
+      <.avatar user={%{name: "Grace Hopper", avatar_url: "https://i.pravatar.cc/80?u=grace"}} />
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/50 mb-3">
+      Inputs
+    </h2>
+    <div class="max-w-sm space-y-1">
+      <.input name="subject" value="" label="Subject" placeholder="Brief summary" />
+      <.input name="body" type="textarea" value="" label="Description" />
+      <.input
+        name="priority"
+        type="select"
+        value="normal"
+        label="Priority"
+        options={[Low: "low", Normal: "normal", High: "high", Urgent: "urgent"]}
+      />
+      <.input name="notify" type="checkbox" value="true" label="Email me on reply" />
+      <.input
+        name="email"
+        value="not-an-email"
+        label="Email"
+        errors={["must have the @ sign and no spaces"]}
+      />
+    </div>
+  </section>
+
+  <section class="mt-10">
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/50 mb-3">
+      Empty state
+    </h2>
+    <div class="border border-base-300 rounded-box">
+      <.empty_state icon="hero-inbox" title="No tickets">
+        Nothing needs your attention right now.
+        <:action><.button variant="primary">New ticket</.button></:action>
+      </.empty_state>
+    </div>
+
+    <section class="mt-10">
+      <.confirm_button
+        id="delete-ticket-dialog"
+        confirm_text="Delete"
+        phx-click="delete"
+      >
+        Delete
+      </.confirm_button>
+    </section>
+  </section>
+</Layouts.app>

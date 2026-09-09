@@ -2,16 +2,16 @@
   <h1>{@message}</h1>
 
   <.timeline entries={@history}>
-  <:entry :let={event}>
-    <div>
-      <p class="font-medium">
-        {event.action}
-      </p>
+    <:entry :let={event}>
+      <div>
+        <p class="font-medium">
+          {event.action}
+        </p>
 
-      <p class="text-sm text-base-content/60">
-        {event.actor} · {event.time}
-      </p>
-    </div>
-  </:entry>
-</.timeline>
+        <p class="text-sm text-base-content/60">
+          {event.actor} · {event.time}
+        </p>
+      </div>
+    </:entry>
+  </.timeline>
 </Layouts.app>

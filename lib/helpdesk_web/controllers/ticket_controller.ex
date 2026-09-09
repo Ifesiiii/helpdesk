@@ -1,38 +1,37 @@
 defmodule HelpdeskWeb.TicketController do
   use HelpdeskWeb, :controller
 
-def show(conn, _params) do
-  history = [
-    %{
-      action: "Ticket created",
-      actor: "Ada",
-      time: "09:15"
-    },
-    %{
-      action: "Assigned to Support Team",
-      actor: "System",
-      time: "09:20"
-    },
-    %{
-      action: "Status changed to In Progress",
-      actor: "Grace",
-      time: "09:45"
-    },
-    %{
-      action: "Ticket resolved",
-      actor: "Grace",
-      time: "11:30"
-    }
-  ]
+  def show(conn, _params) do
+    history = [
+      %{
+        action: "Ticket created",
+        actor: "Ada",
+        time: "09:15"
+      },
+      %{
+        action: "Assigned to Support Team",
+        actor: "System",
+        time: "09:20"
+      },
+      %{
+        action: "Status changed to In Progress",
+        actor: "Grace",
+        time: "09:45"
+      },
+      %{
+        action: "Ticket resolved",
+        actor: "Grace",
+        time: "11:30"
+      }
+    ]
 
-  render(conn, :show,
-    ticket: conn.assigns.ticket,
-    history: history
-  )
+    render(conn, :show,
+      ticket: conn.assigns.ticket,
+      history: history
+    )
+  end
 end
 
-
-end
 #   alias Helpdesk.Tickets
 
 #   plug :load_ticket when action in [:show, :edit, :update, :delete]

@@ -30,5 +30,12 @@
   </head>
   <body>
     {@inner_content}
+    <button
+      class="flex p-2 cursor-pointer w-1/4"
+      phx-click={JS.dispatch("phx:set-theme")}
+      data-phx-theme="high-contrast"
+    >
+      <.icon name="hero-eye-micro" class="size-4 opacity-75 hover:opacity-100" />
+    </button>
   </body>
 </html>

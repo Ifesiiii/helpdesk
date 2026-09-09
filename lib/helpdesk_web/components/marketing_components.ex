@@ -174,35 +174,35 @@ defmodule HelpdeskWeb.MarketingComponents do
   end
 
   @doc """
-Renders a timeline of entries.
+  Renders a timeline of entries.
 
-The caller controls how each entry is displayed through
-the `:entry` scoped slot.
-"""
+  The caller controls how each entry is displayed through
+  the `:entry` scoped slot.
+  """
 
-attr :entries, :list, required: true
-attr :rest, :global
+  attr :entries, :list, required: true
+  attr :rest, :global
 
-slot :entry, required: true
+  slot :entry, required: true
 
-def timeline(assigns) do
-  ~H"""
-  <div class="space-y-0" {@rest}>
-    <div
-      :for={entry <- @entries}
-      class="relative flex gap-4 pb-8 last:pb-0"
-    >
-      <div class="flex flex-col items-center">
-        <div class="size-3 rounded-full bg-primary"></div>
+  def timeline(assigns) do
+    ~H"""
+    <div class="space-y-0" {@rest}>
+      <div
+        :for={entry <- @entries}
+        class="relative flex gap-4 pb-8 last:pb-0"
+      >
+        <div class="flex flex-col items-center">
+          <div class="size-3 rounded-full bg-primary"></div>
 
-        <div class="w-px flex-1 bg-base-300 last:hidden"></div>
-      </div>
+          <div class="w-px flex-1 bg-base-300 last:hidden"></div>
+        </div>
 
-      <div class="flex-1 pb-2">
-        {render_slot(@entry, entry)}
+        <div class="flex-1 pb-2">
+          {render_slot(@entry, entry)}
+        </div>
       </div>
     </div>
-  </div>
-  """
-end
+    """
+  end
 end

@@ -20,6 +20,11 @@ defmodule HelpdeskWeb.PageController do
     )
   end
 
+  # lib/helpdesk_web/controllers/page_controller.ex
+  def components(conn, _params) do
+    render(conn, :components, page_title: "Components")
+  end
+
   def pricing(conn, _params) do
     render(conn, :pricing, page_title: "Pricing", plans: plans())
   end
