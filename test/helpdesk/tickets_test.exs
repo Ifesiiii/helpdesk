@@ -63,5 +63,57 @@ defmodule Helpdesk.TicketsTest do
       ticket = ticket_fixture()
       assert %Ecto.Changeset{} = Tickets.change_ticket(ticket)
     end
+
+    describe "tenant isolation" do
+  test "list_tickets/2 never returns another organisation's tickets" do
+    scope_a = scope_fixture()
+    scope_b = scope_fixture()
+
+    mine = ticket_fixture(scope_a)
+    _theirs = ticket_fixture(scope_b)
+
+    ids =
+      scope_a
+      |> Tickets.list_tickets()
+      |> Enum.map(& &1.id)
+
+    assert mine.id in ids
+    refute Enum.any?(ids, &(&1 == _theirs.id))
+  end
+
+  test "get_ticket!/2 cannot fetch another organisation's ticket" do
+    scope_a = scope_fixture()
+    scope_b = scope_fixture()
+
+    theirs = ticket_fixture(scope_b)
+
+    assert_raise Ecto.NoResultsError, fn ->
+      Tickets.get_ticket!(scope_a, theirs.id)
+    end
+  end
+
+  test "get_ticket_by_reference!/2 cannot fetch another organisation's ticket" do
+    scope_a = scope_fixture()
+    scope_b = scope_fixture()
+
+    theirs = ticket_fixture(scope_b)
+
+    assert_raise Ecto.NoResultsError, fn ->
+      Tickets.get_ticket_by_reference!(
+        scope_a,
+        theirs.reference
+      )
+    end
+  end
+
+  test "count_open_tickets/1 ignores another organisation's tickets" do
+    scope_a = scope_fixture()
+    scope_b = scope_fixture()
+
+    ticket_fixture(scope_b, %{status: :open})
+
+    assert Tickets.count_open_tickets(scope_a) == 0
+  end
+  end
   end
 end

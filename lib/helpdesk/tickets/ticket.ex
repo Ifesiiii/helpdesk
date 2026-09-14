@@ -10,6 +10,12 @@ defmodule Helpdesk.Tickets.Ticket do
     field :priority, Ecto.Enum, values: [:low, :normal, :high, :urgent]
     field :organization_id, :id
 
+    has_many :comments, Helpdesk.Tickets.Comment
+
+    many_to_many :tags, Helpdesk.Tickets.Tag,
+    join_through: Helpdesk.Tickets.TicketTag,
+    on_replace: :delete
+
     timestamps(type: :utc_datetime)
   end
 
@@ -19,4 +25,6 @@ defmodule Helpdesk.Tickets.Ticket do
     |> cast(attrs, [:reference, :subject, :body, :status, :priority])
     |> validate_required([:reference, :subject, :body, :status, :priority])
   end
+
+  
 end

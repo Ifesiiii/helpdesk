@@ -66,4 +66,6 @@ defmodule Helpdesk.Tickets do
     true = ticket.organization_id == scope.organization.id
     Ticket.changeset(ticket, attrs, scope)
   end
+
+  
 end
